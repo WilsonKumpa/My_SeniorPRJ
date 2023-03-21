@@ -22,13 +22,13 @@ dht_sensor = adafruit_dht.DHT22(z)  # change to correct pin number
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/') #รอเรียก function จาก app.run
 def index():
     # initialize variables
     t = None
     h = None
     k = None
-    try:
+    try: #รับข้อมูลจาก sensors และsmartcontract
         u = contract.functions.ZZZ().call() #เรียก function ใน smartcontract
         v = contract.functions.WWW().call()  
         t = dht_sensor.temperature
@@ -37,7 +37,7 @@ def index():
         print("Error reading DHT sensor: ", e)
     # check if t and h are valid
 
-    if (t is not None and h is not None) and not u:
+    if (t is not None and h is not None) and not u: #เงื่อนไขการหมุนมอเตอร์
         # check if t and h values are within range
         arr = ["Temp: {} C".format(t), "Humid: {}".format(h), "SmartContractState: {}".format(v)]
         if t > 30 or h < 70:  
@@ -68,9 +68,9 @@ def index():
             GPIO.output(b, False)
     print("UserControl:{}".format(u), "WindowState:{}".format(v))
     print(arr)
-    return jsonify(arr)
+    return jsonify(arr) #ส่งข้อมูลทางFlask local server
 
-if __name__ == '__main__':
+if __name__ == '__main__': 
     while True:
         app.run(host='0.0.0.0')
         time.sleep(4)
